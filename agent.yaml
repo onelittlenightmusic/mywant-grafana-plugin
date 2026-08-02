@@ -1,0 +1,14 @@
+agent:
+  metadata:
+    name: grafana_panel_agent
+    capability: grafana_panel
+    type: monitor
+  script:
+    path: ./main.py
+    timeout_seconds: 10
+  state_updates:
+    - name: grafana_status
+      type: string
+      label: current
+      persistent: false
+      onFetchData: "status"

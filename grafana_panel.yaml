@@ -1,0 +1,96 @@
+wantType:
+  metadata:
+    name: grafana_panel
+    title: Grafana Panel
+    description: |
+      Embeds a single Grafana dashboard panel into the mywant want card.
+      Continuously monitors Grafana connectivity and displays the panel as an iframe.
+    version: '1.0'
+    category: monitoring
+    pattern: independent
+
+  state:
+    - name: grafana_base_url
+      description: Grafana base URL
+      type: string
+      label: goal
+      persistent: true
+      initialValue: "http://localhost:3000"
+
+    - name: dashboard_uid
+      description: Grafana dashboard UID (from the dashboard URL)
+      type: string
+      label: goal
+      persistent: true
+      initialValue: ""
+
+    - name: panel_id
+      description: Panel ID to embed (from Grafana panel share URL)
+      type: int
+      label: goal
+      persistent: true
+      initialValue: 1
+
+    - name: time_from
+      description: Start of time range (e.g. now-6h, now-24h, now-7d)
+      type: string
+      label: goal
+      persistent: true
+      initialValue: "now-6h"
+
+    - name: refresh
+      description: Auto-refresh interval (e.g. 30s, 1m, 5m)
+      type: string
+      label: goal
+      persistent: true
+      initialValue: "30s"
+
+    - name: grafana_status
+      description: Grafana connectivity status
+      type: string
+      label: current
+      persistent: false
+      initialValue: "unknown"
+      fetchFrom: mrs_raw_output
+      onFetchData: "status"
+
+    - name: mrs_raw_output
+      description: Raw output from health-check script
+      type: object
+      label: current
+      persistent: false
+      initialValue: null
+
+  onInitialize:
+    current:
+      skill_path: "~/.mywant/custom-types/mywant-grafana-plugin/main.py"
+
+  requires:
+    - monitor_mrs_agent
+
+  examples:
+    - name: Claude Code Cost Panel
+      description: Embed the cost-over-time graph from the Claude Code telemetry dashboard
+      want:
+        metadata:
+          name: claude-cost-panel
+          type: grafana_panel
+        spec:
+          params:
+            dashboard_uid: claude-code-telemetry
+            panel_id: 7
+            time_from: now-6h
+            refresh: 30s
+
+    - name: MyWant Log Rate Panel
+      description: Embed the log rate by want from the MyWant dashboard
+      want:
+        metadata:
+          name: mywant-log-rate
+          type: grafana_panel
+        spec:
+          params:
+            dashboard_uid: mywant-telemetry
+            panel_id: 5
+            time_from: now-1h
+            refresh: 10s
