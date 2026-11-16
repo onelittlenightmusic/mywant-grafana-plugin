@@ -1,6 +1,8 @@
 wantType:
   metadata:
     name: grafana_panel
+    labels:
+      aliases: "grafana,グラフ"
     title: Grafana Panel
     description: |
       Embeds a single Grafana dashboard panel into the mywant want card.
